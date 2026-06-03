@@ -1398,105 +1398,41 @@
 
 <!-- ░░ JS ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
 <script>
-  /* ═══════════════════════════════════════════════════════════════════
-     ██████  AUTOCLOSE PT — CONFIGURAÇÃO DE CHECKOUT ██████
-     ═══════════════════════════════════════════════════════════════════
-
-     COMO FUNCIONA O FLUXO COMPLETO:
-       1. Cliente clica "Comprar" → pede número WhatsApp
-       2. Redireciona para Stripe/PayPal com o número nos parâmetros
-       3. Stripe/PayPal confirma pagamento → notifica o teu backend
-       4. Backend ativa acesso e envia mensagem WhatsApp ao cliente
-
-     PASSOS PARA CONFIGURAR:
-       A. Cria os Payment Links no Stripe Dashboard
-       B. Cola os links nos placeholders abaixo (buy.stripe.com/...)
-       C. Para PayPal: PayPal Dashboard > Botões de Pagamento
-       D. Substitui BACKEND_URL pelo URL do teu servidor no Render
-     ─────────────────────────────────────────────────────────────────── */
-
-  // ── BACKEND (Render.com) ──────────────────────────────────────────
-  // Substitui pelo URL real do teu serviço no Render após o deploy
-  const BACKEND_URL = 'https://autoclose-backend.onrender.com';
-
-  // ── STRIPE PAYMENT LINKS ──────────────────────────────────────────
-  // Stripe Dashboard > Payment Links > Criar link > copiar URL buy.stripe.com/...
+  // ── STRIPE PAYMENT LINKS ─────────────────────────────────────────
   const STRIPE_STARTER_LINK = 'https://buy.stripe.com/aFa7sD0LD3B4aNde8i7bW00';
   const STRIPE_PRO_LINK     = 'https://buy.stripe.com/8x29ALfGx4F86wX5BM7bW01';
   const STRIPE_AGENCY_LINK  = 'https://buy.stripe.com/PLACEHOLDER_AGENCY';
 
-  // ── PAYPAL PAYMENT LINKS ──────────────────────────────────────────
-  // PayPal Dashboard > Botões de Pagamento > copiar link
-  const PAYPAL_STARTER_LINK = 'https://www.paypal.com/ncp/payment/PLACEHOLDER_STARTER';
-  const PAYPAL_PRO_LINK     = 'https://www.paypal.com/ncp/payment/PLACEHOLDER_PRO';
-  const PAYPAL_AGENCY_LINK  = 'https://www.paypal.com/ncp/payment/PLACEHOLDER_AGENCY';
-
-  // ── FUNÇÃO DE CHECKOUT ────────────────────────────────────────────
+  // ── CHECKOUT ─────────────────────────────────────────────────────
   function goToCheckout(plan) {
-    // 1. Pedir número de WhatsApp ao cliente (para ativar o acesso)
-    let whatsapp = prompt(
-      '📱 Qual é o teu número de WhatsApp?\n\nFormato: 351912345678 (com indicativo, sem +)\nEste número receberá acesso ao AutoClose PT após o pagamento.'
-    );
-
-    if (!whatsapp) return; // cancelou
-
-    // Limpar espaços e sinais
-    whatsapp = whatsapp.replace(/[\s\+\-\(\)]/g, '');
-
-    // Validação básica: só dígitos, entre 9 e 15 caracteres
-    if (!/^\d{9,15}$/.test(whatsapp)) {
-      alert('❌ Número inválido. Usa o formato: 351912345678');
-      return;
-    }
-
-    const stripeLinks = {
+    const links = {
       starter: STRIPE_STARTER_LINK,
       pro:     STRIPE_PRO_LINK,
       agency:  STRIPE_AGENCY_LINK
     };
 
-    const paypalLinks = {
-      starter: PAYPAL_STARTER_LINK,
-      pro:     PAYPAL_PRO_LINK,
-      agency:  PAYPAL_AGENCY_LINK
-    };
+    const stripeUrl = links[plan];
 
-    const stripeUrl  = stripeLinks[plan];
-    const paypalUrl  = paypalLinks[plan];
-
-    // 2. Verificar se os links estão configurados
     if (!stripeUrl || stripeUrl.includes('PLACEHOLDER')) {
-      alert('⚙️ Pagamento ainda não configurado para o plano ' + plan.toUpperCase() + '.\nContacta o suporte.');
+      alert('⚙️ Pagamento ainda não configurado para este plano. Contacta o suporte.');
       return;
     }
 
-    // 3. Perguntar método de pagamento preferido
-    const metodo = confirm(
-      '💳 Escolhe o método de pagamento:\n\n' +
-      'OK → Stripe (Cartão de crédito/débito)\n' +
-      'Cancelar → PayPal'
+    let whatsapp = prompt(
+      '📱 Qual é o teu número de WhatsApp?\n\nFormato: 351912345678 (com indicativo, sem espaços)\nEste número receberá o teu acesso ao AutoClose PT após o pagamento.'
     );
 
-    if (metodo) {
-      // ── STRIPE ──
-      // Passa o número WhatsApp como prefilled_email não (não suportado),
-      // mas como client_reference_id via parâmetro URL (Stripe Payment Links suportam)
-      // No backend, lemos dos metadata. Para Payment Links simples, usamos
-      // o parâmetro ?client_reference_id= que o Stripe passa no webhook.
-      const finalUrl = stripeUrl + '?client_reference_id=' + encodeURIComponent(whatsapp);
-      window.location.href = finalUrl;
-    } else {
-      // ── PAYPAL ──
-      if (!paypalUrl || paypalUrl.includes('PLACEHOLDER')) {
-        alert('⚙️ Link PayPal não configurado. Usa o Stripe por favor.');
-        return;
-      }
-      // Para PayPal Payment Buttons, passa o número no custom field
-      // O backend lê do custom_id no evento PAYMENT.CAPTURE.COMPLETED
-      window.location.href = paypalUrl + '&custom=' + encodeURIComponent(whatsapp);
+    if (!whatsapp) return;
+
+    whatsapp = whatsapp.replace(/[\s\+\-\(\)]/g, '');
+
+    if (!/^\d{9,15}$/.test(whatsapp)) {
+      alert('❌ Número inválido. Usa o formato: 351912345678');
+      return;
     }
+
+    window.location.href = stripeUrl + '?client_reference_id=' + encodeURIComponent(whatsapp);
   }
-  /* ═══════════════════════════════════════════════════════════════════ */
 
   // Nav scroll
   const nav = document.getElementById('nav');
