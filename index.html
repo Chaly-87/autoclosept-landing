@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AutoClose PT — O Teu Agente de Vendas IA. 24/7. Sem Pausas.</title>
+  <meta name="description" content="Enquanto o teu comercial dorme, o AutoClose PT está a fechar negócios. Resposta em 60 segundos, qualificação automática, follow-up infinito. A partir de €197/mês."/>
+  <meta property="og:title" content="AutoClose PT — Agente de Vendas IA 24/7"/>
+  <meta property="og:description" content="Os teus concorrentes já usam IA para fechar leads. Tu ainda não. Cada hora que passa custa-te dinheiro."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* ═══════════════════════════════════════════
+       RESET & ROOT
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black:        #000000;
+      --surface:      #080808;
+      --surface-2:    #0f0f0f;
+      --orange:       #FF6600;
+      --orange-dim:   rgba(255,102,0,0.12);
+      --orange-line:  rgba(255,102,0,0.35);
+      --amber:        #FF9933;
+      --white:        #FFFFFF;
+      --muted:        #777777;
+      --dim:          #444444;
+      --border:       rgba(255,255,255,0.07);
+      --card:         rgba(255,255,255,0.025);
+      --font-d:       'Space Grotesk', sans-serif;
+      --font-b:       'Inter', sans-serif;
+      --ease:         cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-b);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
+    ::selection { background: var(--orange); color: #000; }
+
+    /* ═══════════════════════════════════════════
+       URGENCY BAR
+    ═══════════════════════════════════════════ */
+    .urgency-bar {
+      background: var(--orange);
+      padding: 11px 24px;
+      text-align: center;
+      position: relative;
+      z-index: 200;
+    }
+    .urgency-bar p {
+      font-family: var(--font-d);
+      font-size: 13px;
+      font-weight: 700;
+      color: #000;
+      letter-spacing: 0.01em;
+    }
+    .urgency-bar p em {
+      font-style: normal;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    #urgency-count {
+      font-weight: 900;
+      font-size: 15px;
+    }
+
+    /* ═══════════════════════════════════════════
+       NAV
+    ═══════════════════════════════════════════ */
+    .nav {
+      position: fixed;
+      top: 36px; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 60px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background .3s var(--ease), border-color .3s;
+    }
+    .nav.scrolled {
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--orange);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-family: var(--font-d);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--white);
+    }
+    .logo-text span { color: var(--orange); }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+    .nav-links a.nl {
+      font-size: 14px;
+      font-weight: 500;
+      color: #666;
+      transition: color .2s;
+    }
+    .nav-links a.nl:hover { color: #fff; }
+    .btn-nav {
+      background: var(--orange);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 7px;
+      font-family: var(--font-d);
+      font-weight: 700;
+      font-size: 14px;
+      transition: background .2s, transform .15s;
+      display: inline-block;
+    }
+    .btn-nav:hover { background: #e05500; transform: scale(1.04); }
+
+    /* ═══════════════════════════════════════════
+       HELPERS
+    ═══════════════════════════════════════════ */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-b);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 22px;
+    }
+    .eyebrow::before {
+      content: '';
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--orange);
+      border-radius: 2px;
+    }
+    h1, h2, h3 {
+      font-family: var(--font-d);
+      letter-spacing: -0.04em;
+      line-height: 1.0;
+    }
+    .section {
+      padding: 120px 60px;
+      position: relative;
+    }
+    .inner {
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    .divider { border-top: 1px solid rgba(255,255,255,0.04); }
+
+    /* ═══════════════════════════════════════════
+       SCROLL ANIMATIONS
+    ═══════════════════════════════════════════ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(38px);
+      transition: opacity .75s var(--ease), transform .75s var(--ease);
+    }
+    .reveal.d1 { transition-delay: .1s; }
+    .reveal.d2 { transition-delay: .2s; }
+    .reveal.d3 { transition-delay: .3s; }
+    .reveal.d4 { transition-delay: .4s; }
+    .reveal.on { opacity: 1; transform: translateY(0); }
+
+    /* ═══════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      background: var(--black);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 150px 60px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(140px);
+      pointer-events: none;
+    }
+    .blob-a {
+      top: -160px; right: -80px;
+      width: 720px; height: 720px;
+      background: radial-gradient(circle, rgba(255,102,0,.20) 0%, transparent 68%);
+      animation: blobDrift 12s ease-in-out infinite alternate;
+    }
+    .blob-b {
+      bottom: -80px; left: 100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(255,153,51,.07) 0%, transparent 70%);
+      animation: blobDrift 16s ease-in-out infinite alternate-reverse;
+    }
+    .blob-c {
+      top: 40%; left: 40%;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(255,102,0,.04) 0%, transparent 70%);
+      animation: blobDrift 20s ease-in-out infinite;
+    }
+    @keyframes blobDrift {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(30px,20px) scale(1.08); }
+    }
+    /* Grid bg */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 980px; }
+    .hero-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,102,0,.1);
+      border: 1px solid rgba(255,102,0,.25);
+      border-radius: 40px;
+      padding: 6px 16px;
+      margin-bottom: 36px;
+      animation: heroFade .6s var(--ease) both;
+    }
+    .live-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--orange);
+      box-shadow: 0 0 8px var(--orange);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: .5; transform: scale(1.4); }
+    }
+    .hero-live span {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+    .hero-title {
+      font-size: clamp(54px, 7.5vw, 106px);
+      font-weight: 900;
+      color: var(--white);
+      margin: 0;
+      animation: heroFade .9s .1s var(--ease) both;
+    }
+    .hero-title .o { color: var(--orange); }
+    .hero-title .ul {
+      position: relative;
+      display: inline-block;
+    }
+    .hero-title .ul::after {
+      content: '';
+      position: absolute;
+      bottom: 4px; left: 0; right: 0;
+      height: 4px;
+      background: var(--orange);
+      border-radius: 2px;
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: underlineIn .6s .9s var(--ease) forwards;
+    }
+    @keyframes underlineIn { to { transform: scaleX(1); } }
+    .hero-sub {
+      margin: 32px 0 50px;
+      font-size: 19px;
+      line-height: 1.65;
+      color: var(--muted);
+      max-width: 580px;
+      animation: heroFade .8s .3s var(--ease) both;
+    }
+    .hero-sub strong { color: var(--white); font-weight: 600; }
+    @keyframes heroFade {
+      from { opacity: 0; transform: translateY(36px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      animation: heroFade .8s .48s var(--ease) both;
+    }
+    .btn-primary {
+      background: var(--orange);
+      color: #fff;
+      padding: 18px 44px;
+      border-radius: 8px;
+      font-family: var(--font-d);
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+      display: inline-block;
+      transition: background .2s, transform .2s, box-shadow .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.15) 0%, transparent 60%);
+    }
+    .btn-primary:hover {
+      background: #e05500;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 36px rgba(255,102,0,.45);
+    }
+    .btn-ghost {
+      color: #666;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color .2s;
+    }
+    .btn-ghost:hover { color: #fff; }
+    .btn-ghost svg { transition: transform .2s; }
+    .btn-ghost:hover svg { transform: translateX(4px); }
+    /* Ticker */
+    .ticker-wrap {
+      margin-top: 80px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 22px 0;
+      display: flex;
+      gap: 56px;
+      overflow-x: auto;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      animation: heroFade .8s .7s var(--ease) both;
+    }
+    .ticker-wrap::-webkit-scrollbar { display: none; }
+    .tick {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+    .tick-val {
+      font-family: var(--font-d);
+      font-size: 30px;
+      font-weight: 900;
+      color: var(--orange);
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    .tick-label {
+      font-size: 12px;
+      color: #555;
+      line-height: 1.35;
+      max-width: 88px;
+    }
+
+    /* ═══════════════════════════════════════════
+       DOR
+    ═══════════════════════════════════════════ */
+    .dor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .dor-title {
+      font-size: clamp(38px, 4vw, 64px);
+      font-weight: 900;
+      color: var(--white);
+      margin: 0 0 24px;
+    }
+    .dor-title .o { color: var(--orange); }
+    .dor-body {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 36px;
+      max-width: 460px;
+    }
+    .dor-body strong { color: var(--white); }
+    .pain-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .pain-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pain-x {
+      flex-shrink: 0;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: rgba(255,60,60,.1);
+      border: 1px solid rgba(255,60,60,.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #ff4444;
+    }
+    .pain-text { font-size: 15px; color: var(--muted); }
+    /* Image card */
+    .img-card {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .img-card img {
+      width: 100%;
+      height: 520px;
+      object-fit: cover;
+      filter: brightness(.85) saturate(.7);
+      display: block;
+    }
+    .img-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 40px 28px 28px;
+      background: linear-gradient(to top, rgba(0,0,0,.95) 0%, transparent 100%);
+    }
+    .img-stat-badge {
+      display: inline-block;
+      background: rgba(0,0,0,.75);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--orange-line);
+      border-radius: 12px;
+      padding: 16px 22px;
+    }
+    .badge-num {
+      font-family: var(--font-d);
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--orange);
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    .badge-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+    /* Cost strip */
+    .cost-strip {
+      margin-top: 80px;
+      background: var(--orange-dim);
+      border: 1px solid var(--orange-line);
+      border-radius: 20px;
+      padding: 52px 60px;
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 0;
+    }
+    .cost-item {
+      padding: 0 40px;
+      border-right: 1px solid rgba(255,102,0,.15);
+    }
+    .cost-item:first-child { padding-left: 0; }
+    .cost-item:last-child { border-right: none; }
+    .cost-val {
+      font-family: var(--font-d);
+      font-size: clamp(44px, 4.5vw, 68px);
+      font-weight: 900;
+      color: var(--orange);
+      letter-spacing: -0.05em;
+      line-height: 1;
+    }
+    .cost-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--white);
+      margin-top: 10px;
+    }
+    .cost-note { font-size: 13px; color: #555; margin-top: 5px; }
+
+    /* ═══════════════════════════════════════════
+       SOLUÇÃO
+    ═══════════════════════════════════════════ */
+    .sol-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      margin-bottom: 72px;
+      align-items: end;
+    }
+    .sol-title {
+      font-size: clamp(38px, 4vw, 64px);
+      font-weight: 900;
+      color: var(--white);
+    }
+    .sol-title .o { color: var(--orange); }
+    .sol-body { font-size: 17px; line-height: 1.7; color: var(--muted); }
+    .sol-hl { font-family: var(--font-d); font-size: 20px; font-weight: 700; color: var(--white); margin-top: 20px; }
+    /* Dashboard */
+    .dash-wrap {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 2px;
+    }
+    .dash-wrap img {
+      width: 100%;
+      max-height: 540px;
+      object-fit: cover;
+      display: block;
+      filter: brightness(.9);
+    }
+    .dash-fade {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, var(--surface) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    /* Features */
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .feat {
+      background: var(--surface);
+      padding: 40px 34px;
+      transition: background .25s, border-color .25s;
+      cursor: default;
+      border: 1px solid transparent;
+    }
+    .feat:hover {
+      background: rgba(255,102,0,.05);
+      border-color: rgba(255,102,0,.18);
+    }
+    .feat-icon { font-size: 30px; margin-bottom: 18px; }
+    .feat-title {
+      font-family: var(--font-d);
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+    .feat-desc { font-size: 14px; color: #606060; line-height: 1.65; }
+
+    /* ═══════════════════════════════════════════
+       COMO FUNCIONA
+    ═══════════════════════════════════════════ */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.04);
+    }
+    .step {
+      background: var(--black);
+      padding: 60px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .step-ghost {
+      position: absolute;
+      top: 30px; right: 28px;
+      font-family: var(--font-d);
+      font-size: 130px;
+      font-weight: 900;
+      color: rgba(255,102,0,.035);
+      line-height: 1;
+      user-select: none;
+      pointer-events: none;
+    }
+    .step-num {
+      font-family: var(--font-d);
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--orange);
+      letter-spacing: .08em;
+      margin-bottom: 28px;
+    }
+    .step-title {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    .step-desc { font-size: 15px; color: #606060; line-height: 1.7; }
+
+    /* ═══════════════════════════════════════════
+       PROVA SOCIAL
+    ═══════════════════════════════════════════ */
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 20px;
+    }
+    .test-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 36px;
+      transition: border-color .25s;
+    }
+    .test-card:hover { border-color: rgba(255,102,0,.25); }
+    .test-stars { color: var(--orange); font-size: 14px; letter-spacing: 2px; margin-bottom: 20px; }
+    .test-quote { font-size: 38px; font-family: var(--font-d); font-weight: 900; color: var(--orange); line-height: 1; margin-bottom: 18px; }
+    .test-body { font-size: 16px; color: #bbb; line-height: 1.7; font-style: italic; margin-bottom: 28px; }
+    .test-author-name { font-family: var(--font-d); font-size: 15px; font-weight: 700; color: var(--white); }
+    .test-author-role { font-size: 13px; color: #555; margin-top: 3px; }
+    /* Resultado strip */
+    .results-strip {
+      margin-top: 64px;
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .res-item {
+      background: var(--surface-2);
+      padding: 32px 28px;
+      text-align: center;
+    }
+    .res-val {
+      font-family: var(--font-d);
+      font-size: 40px;
+      font-weight: 900;
+      color: var(--orange);
+      letter-spacing: -0.04em;
+    }
+    .res-label { font-size: 14px; color: var(--muted); margin-top: 6px; }
+
+    /* ═══════════════════════════════════════════
+       PRICING
+    ═══════════════════════════════════════════ */
+    .price-header { text-align: center; margin-bottom: 64px; }
+    .price-title {
+      font-size: clamp(38px, 4vw, 64px);
+      font-weight: 900;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+    .price-title .o { color: var(--orange); }
+    .price-sub { font-size: 17px; color: var(--muted); }
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .plan {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 44px 36px;
+      position: relative;
+    }
+    .plan.hot {
+      background: rgba(255,102,0,.07);
+      border-color: rgba(255,102,0,.45);
+    }
+    .plan-badge {
+      position: absolute;
+      top: -14px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--orange);
+      color: #000;
+      font-family: var(--font-d);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 5px 18px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .plan-name {
+      font-family: var(--font-d);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 18px;
+    }
+    .plan.hot .plan-name { color: var(--amber); }
+    .plan-row { display: flex; align-items: baseline; gap: 5px; margin-bottom: 6px; }
+    .plan-price {
+      font-family: var(--font-d);
+      font-size: 58px;
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: -0.05em;
+      line-height: 1;
+    }
+    .plan-mo { font-size: 16px; color: #555; }
+    .plan-setup { font-size: 13px; color: var(--orange); margin-bottom: 14px; }
+    .plan-desc {
+      font-size: 14px;
+      color: #606060;
+      line-height: 1.6;
+      padding-bottom: 28px;
+      margin-bottom: 28px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .plan-feats { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+    .pf {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pf-check {
+      width: 17px; height: 17px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,.05);
+      font-size: 9px;
+      color: #555;
+    }
+    .plan.hot .pf-check {
+      background: rgba(255,102,0,.2);
+      color: var(--orange);
+    }
+    .pf-txt { font-size: 14px; color: #888; }
+    .btn-plan {
+      display: block;
+      text-align: center;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: var(--font-d);
+      font-weight: 700;
+      font-size: 15px;
+      transition: all .2s;
+      border: 1px solid rgba(255,255,255,.1);
+      color: #777;
+    }
+    .btn-plan:hover { color: var(--white); border-color: rgba(255,255,255,.3); }
+    .btn-plan.cta {
+      background: var(--orange);
+      color: #fff;
+      border-color: var(--orange);
+    }
+    .btn-plan.cta:hover { background: #e05500; border-color: #e05500; }
+    .compare-bar {
+      margin-top: 44px;
+      text-align: center;
+      padding: 22px 32px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 14px;
+      color: #555;
+    }
+    .compare-bar strong { color: var(--orange); font-weight: 700; }
+
+    /* ═══════════════════════════════════════════
+       CTA FINAL
+    ═══════════════════════════════════════════ */
+    .cta-final {
+      background: var(--orange);
+      padding: 150px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,0,0,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,.08) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+    .cta-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      top: -100px; right: -100px;
+      width: 500px; height: 500px;
+      background: rgba(255,180,0,.25);
+    }
+    .cta-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    .cta-pre {
+      display: inline-block;
+      background: rgba(0,0,0,.15);
+      border-radius: 40px;
+      padding: 6px 18px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,.6);
+      margin-bottom: 28px;
+    }
+    .cta-title {
+      font-size: clamp(48px, 6.5vw, 90px);
+      font-weight: 900;
+      color: #000;
+      margin-bottom: 24px;
+      line-height: .95;
+    }
+    .cta-sub {
+      font-size: 21px;
+      color: rgba(0,0,0,.6);
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto 52px;
+    }
+    .cta-sub strong { color: #000; }
+    .cta-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-cta-main {
+      background: #000;
+      color: #fff;
+      padding: 22px 54px;
+      border-radius: 9px;
+      font-family: var(--font-d);
+      font-weight: 900;
+      font-size: 19px;
+      letter-spacing: -0.01em;
+      display: inline-block;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-cta-main:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 44px rgba(0,0,0,.4);
+    }
+    .btn-cta-ghost {
+      background: transparent;
+      color: #000;
+      padding: 22px 40px;
+      border-radius: 9px;
+      font-family: var(--font-d);
+      font-weight: 700;
+      font-size: 17px;
+      border: 2px solid rgba(0,0,0,.25);
+      display: inline-block;
+      transition: border-color .2s;
+    }
+    .btn-cta-ghost:hover { border-color: rgba(0,0,0,.55); }
+    .cta-fine {
+      font-size: 13px;
+      color: rgba(0,0,0,.4);
+      margin-top: 28px;
+    }
+
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    .footer {
+      background: var(--black);
+      padding: 56px 60px;
+      border-top: 1px solid rgba(255,255,255,.04);
+    }
+    .footer-row {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    .footer-logo-text {
+      font-family: var(--font-d);
+      font-weight: 800;
+      font-size: 17px;
+      color: var(--white);
+      letter-spacing: -0.03em;
+    }
+    .footer-logo-text span { color: var(--orange); }
+    .footer-links { display: flex; gap: 28px; }
+    .footer-links a { font-size: 13px; color: #3a3a3a; transition: color .2s; }
+    .footer-links a:hover { color: #888; }
+    .footer-copy { font-size: 13px; color: #2a2a2a; }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media(max-width: 1100px) {
+      .dor-grid, .sol-header { grid-template-columns: 1fr; gap: 48px; }
+      .feat-grid { grid-template-columns: repeat(2,1fr); }
+      .steps { grid-template-columns: 1fr; }
+      .test-grid { grid-template-columns: 1fr; }
+      .plans { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
+      .results-strip { grid-template-columns: repeat(2,1fr); }
+      .cost-strip { grid-template-columns: 1fr; padding: 36px; gap: 28px; }
+      .cost-item { padding: 0 0 28px; border-right: none; border-bottom: 1px solid rgba(255,102,0,.15); }
+      .cost-item:last-child { border-bottom: none; padding-bottom: 0; }
+      .nav { padding: 0 28px; }
+      .section { padding: 80px 28px; }
+      .hero { padding: 140px 28px 70px; }
+      .cta-final { padding: 100px 28px; }
+      .footer { padding: 48px 28px; }
+    }
+    @media(max-width: 700px) {
+      .nav-links .nl { display: none; }
+      .hero-title { font-size: clamp(42px, 11vw, 64px); }
+      .hero-sub { font-size: 16px; }
+      .feat-grid { grid-template-columns: 1fr; }
+      .results-strip { grid-template-columns: 1fr 1fr; }
+      .cta-btns { flex-direction: column; align-items: center; }
+      .btn-cta-main, .btn-cta-ghost { width: 100%; text-align: center; }
+      .footer-row { flex-direction: column; text-align: center; }
+      .footer-links { justify-content: center; }
+      .ticker-wrap { gap: 36px; }
+      .urgency-bar p { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ░░ URGENCY BAR ░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<div class="urgency-bar">
+  <p>⚠ Agora mesmo, <em>os teus concorrentes estão a fechar leads com IA</em>. Já perdeste <strong id="urgency-count">0</strong> leads hoje sem resposta.</p>
+</div>
+
+<!-- ░░ NAV ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<nav class="nav" id="nav">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M3 5h14M3 10h9M3 15h11" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="17" cy="14" r="3.5" fill="#fff"/>
+      </svg>
+    </div>
+    <span class="logo-text">AutoClose <span>PT</span></span>
+  </div>
+  <div class="nav-links">
+    <a href="#solucao" class="nl">Como Funciona</a>
+    <a href="#pricing" class="nl">Preços</a>
+    <a href="#prova" class="nl">Resultados</a>
+    <a href="#" onclick="goToCheckout('pro'); return false;" class="btn-nav">Activar agora →</a>
+  </div>
+</nav>
+
+<!-- ░░ HERO ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<section class="hero">
+  <div class="blob blob-a"></div>
+  <div class="blob blob-b"></div>
+  <div class="blob blob-c"></div>
+
+  <div class="hero-content">
+    <div class="hero-live">
+      <div class="live-dot"></div>
+      <span>Agente IA Activo · 24/7 · Portugal</span>
+    </div>
+
+    <h1 class="hero-title">
+      Os teus concorrentes<br>
+      já estão a fechar<br>
+      <span class="o"><span class="ul">leads enquanto dormes.</span></span>
+    </h1>
+
+    <p class="hero-sub">
+      O AutoClose PT responde em <strong>menos de 60 segundos</strong>,
+      qualifica cada lead, faz follow-up automático e fecha negócios —
+      <strong>mesmo quando estás offline, no almoço, ou a dormir.</strong>
+    </p>
+
+    <div class="hero-ctas">
+      <a href="#" onclick="goToCheckout('pro'); return false;" class="btn-primary">Activa o teu agente agora →</a>
+      <a href="#solucao" class="btn-ghost">
+        Ver como funciona
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="ticker-wrap">
+      <div class="tick"><span class="tick-val">&lt;60s</span><span class="tick-label">Tempo de resposta</span></div>
+      <div class="tick"><span class="tick-val">94%</span><span class="tick-label">Taxa de qualificação</span></div>
+      <div class="tick"><span class="tick-val">€10K+</span><span class="tick-label">Custo humano evitado/ano</span></div>
+      <div class="tick"><span class="tick-val">3×</span><span class="tick-label">Mais conversões</span></div>
+      <div class="tick"><span class="tick-val">24/7</span><span class="tick-label">Sempre disponível</span></div>
+      <div class="tick"><span class="tick-val">€197</span><span class="tick-label">Começa a partir de</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ DOR ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<section class="section divider" style="background:var(--black);">
+  <div class="inner">
+    <div class="dor-grid">
+      <!-- Left -->
+      <div>
+        <span class="eyebrow reveal">A Dor</span>
+        <h2 class="dor-title reveal d1">
+          Cada lead sem resposta<br>
+          em 5 minutos<br>
+          <span class="o">já foi ao concorrente.</span>
+        </h2>
+        <p class="dor-body reveal d2">
+          78% dos clientes compram ao primeiro vendedor que responde.
+          O teu comercial humano está em reunião, no almoço, ou a dormir.
+          <strong>O dinheiro está a sair pela janela, hora a hora.</strong>
+        </p>
+        <div class="pain-list reveal d2">
+          <div class="pain-item">
+            <div class="pain-x">✕</div>
+            <span class="pain-text">Follow-ups esquecidos = negócios que nunca fecham</span>
+          </div>
+          <div class="pain-item">
+            <div class="pain-x">✕</div>
+            <span class="pain-text">Comerciais custam €2.500+/mês + encargos + baixas</span>
+          </div>
+          <div class="pain-item">
+            <div class="pain-x">✕</div>
+            <span class="pain-text">Leads frias após 24h têm conversão praticamente zero</span>
+          </div>
+          <div class="pain-item">
+            <div class="pain-x">✕</div>
+            <span class="pain-text">Fora de horas? A concorrência está a fechar. Tu não.</span>
+          </div>
+          <div class="pain-item">
+            <div class="pain-x">✕</div>
+            <span class="pain-text">67% das leads nunca recebem nenhum follow-up</span>
+          </div>
+        </div>
+      </div>
+      <!-- Right -->
+      <div class="img-card reveal d2">
+        <img
+          src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=900&q=82"
+          alt="Profissional a perder oportunidades de negócio"
+          loading="lazy"
+        />
+        <div class="img-overlay">
+          <div class="img-stat-badge">
+            <div class="badge-num">78%</div>
+            <div class="badge-sub">compram ao primeiro<br>que responde</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cost strip -->
+    <div class="cost-strip reveal d1">
+      <div class="cost-item">
+        <div class="cost-val">€10K+</div>
+        <div class="cost-label">Custo anual de 1 comercial</div>
+        <div class="cost-note">Salário + encargos + formação + subsídios</div>
+      </div>
+      <div class="cost-item">
+        <div class="cost-val">67%</div>
+        <div class="cost-label">Das leads sem follow-up</div>
+        <div class="cost-note">Estudo HubSpot Sales Report 2024</div>
+      </div>
+      <div class="cost-item">
+        <div class="cost-val">10×</div>
+        <div class="cost-label">Menos conversão após 1h</div>
+        <div class="cost-note">Lead esfriada = dinheiro que nunca voltou</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ SOLUÇÃO ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<section class="section divider" style="background:var(--surface);" id="solucao">
+  <div class="inner">
+    <div class="sol-header">
+      <div>
+        <span class="eyebrow reveal">A Solução</span>
+        <h2 class="sol-title reveal d1">
+          Um agente de vendas IA<br>
+          que nunca dorme,<br>
+          <span class="o">nunca falha,</span><br>
+          nunca se esquece.
+        </h2>
+      </div>
+      <div class="reveal d2" style="display:flex;flex-direction:column;justify-content:flex-end;">
+        <p class="sol-body">
+          O AutoClose PT integra-se no teu WhatsApp Business, Instagram,
+          site, email e CRM. Responde instantaneamente a cada lead, faz
+          as perguntas certas, qualifica com inteligência e empurra
+          para o fecho — automaticamente, a qualquer hora.
+        </p>
+        <p class="sol-hl">Resultado: mais vendas, menos custo, zero esforço manual.</p>
+      </div>
+    </div>
+
+    <!-- Dashboard image -->
+    <div class="dash-wrap reveal">
+      <img
+        src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1400&q=82"
+        alt="AutoClose PT — Dashboard de Vendas IA"
+        loading="lazy"
+      />
+      <div class="dash-fade"></div>
+    </div>
+
+    <!-- Features -->
+    <div class="feat-grid reveal">
+      <div class="feat">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-title">Resposta em &lt; 60s</div>
+        <p class="feat-desc">Nunca mais percas uma lead por demora. Resposta imediata em todos os canais, mesmo às 3h da manhã.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🎯</div>
+        <div class="feat-title">Qualificação inteligente</div>
+        <p class="feat-desc">Faz as perguntas certas, identifica intenção de compra real e prioriza automaticamente os leads quentes.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🔄</div>
+        <div class="feat-title">Follow-up automático</div>
+        <p class="feat-desc">Até 7 touchpoints personalizados por lead. Leads frias reativadas. Zero esquecimentos. Zero desculpas.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">📱</div>
+        <div class="feat-title">Multi-canal nativo</div>
+        <p class="feat-desc">WhatsApp, Instagram DM, site, email, SMS. Uma plataforma central para todos os canais de vendas.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">CRM + Pipeline visual</div>
+        <p class="feat-desc">Histórico completo de cada conversa, pipeline em tempo real, relatórios de desempenho diários.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🤝</div>
+        <div class="feat-title">Handoff inteligente</div>
+        <p class="feat-desc">Quando o cliente está pronto para comprar, transfere para o teu comercial com todo o contexto já preparado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ COMO FUNCIONA ░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<section class="section divider" style="background:var(--black);">
+  <div class="inner">
+    <span class="eyebrow reveal">Como Funciona</span>
+    <h2 class="reveal d1" style="font-size:clamp(38px,4vw,64px);font-weight:900;color:#fff;margin-bottom:64px;">
+      Três passos.<br><span style="color:var(--orange)">Resultados no dia 1.</span>
+    </h2>
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-ghost">01</div>
+        <div class="step-num">PASSO 01</div>
+        <h3 class="step-title">Integras em 24h</h3>
+        <p class="step-desc">Conectamos ao teu WhatsApp Business, site e CRM existente. Treinamos o agente com o teu produto, objecções reais e tom de voz da tua marca.</p>
+      </div>
+      <div class="step">
+        <div class="step-ghost">02</div>
+        <div class="step-num">PASSO 02</div>
+        <h3 class="step-title">O agente actua</h3>
+        <p class="step-desc">Cada lead nova recebe resposta imediata. Qualificação, educação, criação de urgência e empurrão para a decisão de compra — tudo automático.</p>
+      </div>
+      <div class="step">
+        <div class="step-ghost">03</div>
+        <div class="step-num">PASSO 03</div>
+        <h3 class="step-title">Tu só fechas</h3>
+        <p class="step-desc">Recebe apenas os leads quentes, já qualificados, com todo o histórico de conversa. O teu tempo vai para fechar — não para perseguir.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ PROVA SOCIAL ░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<section class="section divider" style="background:var(--surface);" id="prova">
+  <div class="inner">
+    <div style="margin-bottom:56px;">
+      <span class="eyebrow reveal">Resultados Reais</span>
+      <h2 class="reveal d1" style="font-size:clamp(36px,4vw,60px);font-weight:900;color:#fff;">
+        Empresas portuguesas<br>que <span style="color:var(--orange)">pararam de perder dinheiro.</span>
+      </h2>
+    </div>
+    <div class="test-grid">
+      <div class="test-card reveal">
+        <div class="test-stars">★★★★★</div>
+        <div class="test-quote">"</div>
+        <p class="test-body">Em 3 semanas recuperámos 40 leads que tinham ficado sem resposta. O ROI foi imediato — o AutoClose PT já pagou 8 meses de subscrição.</p>
+        <div class="test-author-name">Miguel F.</div>
+        <div class="test-author-role">CEO · Agência Imobiliária, Porto</div>
+      </div>
+      <div class="test-card reveal d1">
+        <div class="test-stars">★★★★★</div>
+        <div class="test-quote">"</div>
+        <p class="test-body">O meu comercial custava €2.800/mês e trabalhava 8h. O AutoClose PT custa €397 e trabalha 24h. Não precisei de pensar muito nesta decisão.</p>
+        <div class="test-author-name">Ana C.</div>
+        <div class="test-author-role">Fundadora · Clínica de Estética, Lisboa</div>
+      </div>
+      <div class="test-card reveal d2">
+        <div class="test-stars">★★★★★</div>
+        <div class="test-quote">"</div>
+        <p class="test-body">Subimos a taxa de fecho em 34% no primeiro mês. Os leads chegam já quentes, qualificados e com contexto completo. A equipa commercial ficou libertada.</p>
+        <div class="test-author-name">João M.</div>
+        <div class="test-author-role">Director Comercial · Software B2B, Braga</div>
+      </div>
+    </div>
+
+    <!-- Results strip -->
+    <div class="results-strip reveal d1">
+      <div class="res-item">
+        <div class="res-val">+34%</div>
+        <div class="res-label">Taxa de fecho média</div>
+      </div>
+      <div class="res-item">
+        <div class="res-val">3×</div>
+        <div class="res-label">Mais leads convertidos</div>
+      </div>
+      <div class="res-item">
+        <div class="res-val">&lt;60s</div>
+        <div class="res-label">Tempo de primeira resposta</div>
+      </div>
+      <div class="res-item">
+        <div class="res-val">€0</div>
+        <div class="res-label">Leads perdidas por ausência</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ PRICING ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<section class="section divider" style="background:var(--black);overflow:hidden;" id="pricing">
+  <div class="blob blob-a" style="opacity:.5;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+  <div class="inner" style="position:relative;">
+    <div class="price-header reveal">
+      <span class="eyebrow" style="display:inline-flex;">Preços</span>
+      <h2 class="price-title">
+        Menos que um dia<br>
+        <span class="o">de um comercial humano.</span>
+      </h2>
+      <p class="price-sub">Mensalidade SaaS + fee de setup único. Sem contratos. Cancelas quando quiseres.</p>
+    </div>
+
+    <div class="plans">
+      <!-- Starter -->
+      <div class="plan reveal">
+        <div class="plan-name">Starter</div>
+        <div class="plan-row">
+          <span class="plan-price">€197</span>
+          <span class="plan-mo">/mês</span>
+        </div>
+        <div class="plan-setup">+ €497 fee de setup único</div>
+        <p class="plan-desc">Para negócios que estão a começar a automatizar o processo de vendas.</p>
+        <div class="plan-feats">
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">1 Agente IA configurado</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Até 500 conversas/mês</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">WhatsApp + Site</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">CRM básico integrado</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Follow-up automático (3 steps)</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Dashboard de resultados</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Suporte por email</span></div>
+        </div>
+        <a href="#" onclick="goToCheckout('starter'); return false;" class="btn-plan">Começar com Starter</a>
+      </div>
+
+      <!-- Pro -->
+      <div class="plan hot reveal d1">
+        <div class="plan-badge">⚡ Mais Popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-row">
+          <span class="plan-price">€397</span>
+          <span class="plan-mo">/mês</span>
+        </div>
+        <div class="plan-setup">+ €997 fee de setup único</div>
+        <p class="plan-desc">Para equipas que querem escalar vendas sem escalar custos de estrutura.</p>
+        <div class="plan-feats">
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">3 Agentes IA configurados</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Conversas ilimitadas</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">WhatsApp + Instagram + Site + Email</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">CRM avançado + Pipeline visual</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Follow-up automático (7 steps)</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Qualificação inteligente</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">A/B testing de mensagens</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Relatórios avançados</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Suporte prioritário 24h</span></div>
+        </div>
+        <a href="#" onclick="goToCheckout('pro'); return false;" class="btn-plan cta">Activar AutoClose PT</a>
+      </div>
+
+      <!-- Agency -->
+      <div class="plan reveal d2">
+        <div class="plan-name">Agency</div>
+        <div class="plan-row">
+          <span class="plan-price">€997</span>
+          <span class="plan-mo">/mês</span>
+        </div>
+        <div class="plan-setup">+ €2.500 fee de setup único</div>
+        <p class="plan-desc">White-label completo para agências e consultores que querem revender.</p>
+        <div class="plan-feats">
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Agentes ilimitados</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">White-label completo</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Branding 100% personalizado</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Dashboard para os teus clientes</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">API access completo</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Onboarding dedicado</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Account manager exclusivo</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">Formação da tua equipa</span></div>
+          <div class="pf"><div class="pf-check">✓</div><span class="pf-txt">SLA de uptime garantido</span></div>
+        </div>
+        <a href="#" onclick="goToCheckout('agency'); return false;" class="btn-plan">Falar com a equipa</a>
+      </div>
+    </div>
+
+    <div class="compare-bar reveal d1">
+      Comparação directa: <span style="color:#666">11x.ai €2.000+ · Artisan €1.500+ · Drift/Intercom €600+</span> ·
+      <strong>AutoClose PT a partir de €197 — mesma IA. Décima parte do preço.</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ CTA FINAL ░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<section class="cta-final">
+  <div class="cta-grid-bg"></div>
+  <div class="cta-blob"></div>
+  <div class="cta-inner">
+    <span class="cta-pre">⏱ Última chamada</span>
+    <h2 class="cta-title reveal">
+      Cada hora sem o AutoClose PT<br>custa-te dinheiro real.
+    </h2>
+    <p class="cta-sub reveal d1">
+      Leads que chegaram <strong>enquanto lias esta página</strong>
+      já compraram ao concorrente.<br>
+      O próximo passo és tu.
+    </p>
+    <div class="cta-btns reveal d2">
+      <a href="#" onclick="goToCheckout('pro'); return false;" class="btn-cta-main">Começa hoje — autoclosept.com</a>
+      <a href="#" class="btn-cta-ghost">Falar com a equipa →</a>
+    </div>
+    <p class="cta-fine reveal d3">Setup em 24h &nbsp;·&nbsp; Sem contratos &nbsp;·&nbsp; Cancelas quando quiseres</p>
+  </div>
+</section>
+
+<!-- ░░ FOOTER ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<footer class="footer">
+  <div class="footer-row">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="logo-icon" style="width:28px;height:28px;border-radius:7px;">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+          <path d="M3 5h14M3 10h9M3 15h11" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="17" cy="14" r="3.5" fill="#fff"/>
+        </svg>
+      </div>
+      <span class="footer-logo-text">AutoClose <span>PT</span></span>
+    </div>
+    <div class="footer-links">
+      <a href="#">Privacidade</a>
+      <a href="#">Termos</a>
+      <a href="#">Contacto</a>
+    </div>
+    <p class="footer-copy">© 2025 AutoClose PT · autoclosept.com</p>
+  </div>
+</footer>
+
+<!-- ░░ JS ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<script>
+  /* ═══════════════════════════════════════════════════════════════════
+     ██████  AUTOCLOSE PT — CONFIGURAÇÃO DE CHECKOUT ██████
+     ═══════════════════════════════════════════════════════════════════
+     INSTRUÇÕES:
+     1. Cria conta gratuita em https://stripe.com (5 minutos)
+     2. Em Stripe Dashboard > Payment Links, cria um link por plano
+     3. Cola o link gerado pelo Stripe nos placeholders abaixo
+     4. Para o PayPal: https://www.paypal.com/pt/webapps/mpp/payment-buttons
+     ─────────────────────────────────────────────────────────────────── */
+
+  // ── STRIPE PAYMENT LINKS ──────────────────────────────────────────
+  // Substitui cada placeholder pelo teu link real do Stripe
+  const STRIPE_STARTER_LINK = 'https://checkout.stripe.com/pay/PLACEHOLDER_STARTER';
+  // Ex real: 'https://buy.stripe.com/test_abc123'
+
+  const STRIPE_PRO_LINK     = 'https://checkout.stripe.com/pay/PLACEHOLDER_PRO';
+  // Ex real: 'https://buy.stripe.com/test_xyz456'
+
+  const STRIPE_AGENCY_LINK  = 'https://checkout.stripe.com/pay/PLACEHOLDER_AGENCY';
+  // Ex real: 'https://buy.stripe.com/test_def789'
+
+  // ── PAYPAL (alternativa) ──────────────────────────────────────────
+  // Se preferires PayPal, usa o teu link de pagamento PayPal aqui
+  const PAYPAL_STARTER_LINK = 'https://www.paypal.com/ncp/payment/PLACEHOLDER_STARTER';
+  const PAYPAL_PRO_LINK     = 'https://www.paypal.com/ncp/payment/PLACEHOLDER_PRO';
+  const PAYPAL_AGENCY_LINK  = 'https://www.paypal.com/ncp/payment/PLACEHOLDER_AGENCY';
+
+  // ── URLS DE RETORNO PÓS-PAGAMENTO ────────────────────────────────
+  /*
+     COMO CONFIGURAR NO STRIPE:
+     Dashboard > Payment Links > [o teu link] > After payment:
+     → "Redirect customers to" → cola o URL abaixo para cada plano
+
+     CHATBASE (recomendado, plano gratuito):
+       https://www.chatbase.co/dashboard
+
+     VOICEFLOW (alternativa):
+       https://creator.voiceflow.com
+
+     O cliente paga → Stripe processa → redireciona automaticamente
+     para o painel da IA onde começa a configurar o seu agente.
+
+     COMO CONFIGURAR NO PAYPAL:
+     Minha Conta > Botões de Pagamento > [editar botão]
+     → "Return URL" → cola o mesmo URL de retorno
+  */
+  const SUCCESS_URL_STARTER = 'https://www.chatbase.co/dashboard';
+  const SUCCESS_URL_PRO     = 'https://www.chatbase.co/dashboard';
+  const SUCCESS_URL_AGENCY  = 'https://creator.voiceflow.com';
+
+  // ── FUNÇÃO DE CHECKOUT ────────────────────────────────────────────
+  // Redireciona para o link de pagamento correto conforme o plano
+  function goToCheckout(plan) {
+    const links = {
+      starter: STRIPE_STARTER_LINK,
+      pro:     STRIPE_PRO_LINK,
+      agency:  STRIPE_AGENCY_LINK
+    };
+    const url = links[plan];
+    if (!url || url.includes('PLACEHOLDER')) {
+      // Ainda sem chaves reais — mostra instrução ao owner
+      alert('⚙️ Link de pagamento ainda não configurado.\nSubstitui o PLACEHOLDER_' + plan.toUpperCase() + ' no código pelo teu link Stripe real.');
+      return;
+    }
+    window.location.href = url;
+  }
+  /* ═══════════════════════════════════════════════════════════════════ */
+
+  // Nav scroll
+  const nav = document.getElementById('nav');
+  const urgencyOffset = document.querySelector('.urgency-bar').offsetHeight;
+  window.addEventListener('scroll', () => {
+    nav.style.top = window.scrollY > 10 ? '0' : urgencyOffset + 'px';
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const ro = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+  }, { threshold: 0.08, rootMargin: '-50px 0px' });
+  revealEls.forEach(el => ro.observe(el));
+
+  // FOMO counter — simulates leads lost since page load
+  // Based on ~40 leads/day for a typical PT SMB = ~1 lead every 36 min
+  const countEl = document.getElementById('urgency-count');
+  const startTime = Date.now();
+  const leadsPerMs = 40 / (24 * 60 * 60 * 1000); // 40 leads/day
+  function updateCounter() {
+    const lost = Math.floor((Date.now() - startTime) * leadsPerMs * 1000);
+    // Show "leads this hour industry-wide" for impact
+    const hourlyLost = Math.floor(((Date.now() - startTime) / 1000) * 0.08);
+    countEl.textContent = hourlyLost;
+  }
+  setInterval(updateCounter, 3000);
+
+  // Smooth scroll for internal links only
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    const h = a.getAttribute('href');
+    if (h === '#') return;
+    a.addEventListener('click', e => {
+      const t = document.querySelector(h);
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  // Subtle parallax on hero blobs
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    document.querySelector('.blob-a').style.transform = `translateY(${y * 0.15}px)`;
+    document.querySelector('.blob-b').style.transform = `translateY(${-y * 0.1}px)`;
+  }, { passive: true });
+</script>
+</body>
+</html>
