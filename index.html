@@ -961,6 +961,8 @@
   </style>
 </head>
 <body>
+<!-- AutoClose Analytics Pixel -->
+<img src="https://autoclose-dashboard.onrender.com/api/pixel" width="1" height="1" style="display:none" alt="" />
 
 <!-- ░░ URGENCY BAR ░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
 <div class="urgency-bar">
@@ -1430,6 +1432,14 @@
       alert('❌ Número inválido. Usa o formato: 351912345678');
       return;
     }
+
+    // Track click no dashboard
+    fetch('https://autoclose-dashboard.onrender.com/api/track/click', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan: plan, whatsapp: whatsapp }),
+      keepalive: true
+    }).catch(() => {});
 
     window.location.href = stripeUrl + '?client_reference_id=' + encodeURIComponent(whatsapp);
   }
